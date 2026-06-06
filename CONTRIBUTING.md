@@ -1,7 +1,7 @@
 # Contributing to provenance-kit
 
-Thanks for your interest. This project is in early extraction (see
-[`CHANGELOG.md`](CHANGELOG.md)); the notes below will firm up before `v0.1.0`.
+Thanks for your interest! The principles and test contract below keep the
+provenance guarantees intact — please skim them before opening a PR.
 
 ## Principles
 

@@ -8,8 +8,6 @@ When AI agents write your code, the prompts *are* the source- but for most build
 
 It's a drop-in tool. Point it at a prompt library — any directory under version control — and builds that use it start producing provenance. Works under Claude Code or opencode.
 
-> ℹ️ This repository is a work-in-progress extraction from a private prompt library. Some references are still being genericized — see [`CHANGELOG.md`](CHANGELOG.md).
-
 ## Your prompts never leave your control
 
 provenance-kit records **hashes of** your prompts, not the prompts themselves. A build's provenance — manifest, audit chain, signed attestation — contains SHA-256 digests, git commit SHAs, and activity counters. **No prompt text.**

@@ -48,3 +48,6 @@ jobs:
 
       - name: Harness capture (Claude Code hooks)
         run: bash tests/provenance_fixture/harness_capture_test.sh
+
+      - name: Vendor + symlink acceptance
+        run: bash tests/acceptance/vendor_symlink.sh
