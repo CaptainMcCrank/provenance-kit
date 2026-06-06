@@ -17,7 +17,7 @@ provenance-kit records **hashes of** your prompts, not the prompts themselves. A
 - You can publish a provenance record, attach it to an incident report, or hand it to an auditor — it discloses nothing about what your instructions say.
 - Verifying a record requires *possessing the library* to recompute the hashes. The proof is meaningful to anyone holding the prompts and opaque to everyone else.
 
-This tool is public, but your library stays private.  Records are safe to share. Nothing about provenance requires exposing a internal prompts.
+This tool is public, but your library stays private.  Provenance-kit Records are safe to share. Nothing about provenance requires exposing your internal prompts.
 
 ## What it answers
 
