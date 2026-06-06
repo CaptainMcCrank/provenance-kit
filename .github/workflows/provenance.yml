@@ -1,0 +1,50 @@
+# Provenance fixture CI — runs the A/B parity test and the tamper matrix on
+# every push/PR that touches the provenance module or its tests.
+#
+# - run_parity_test.sh : a known-good build is produced and verifies clean.
+# - tamper_test.sh     : verification catches a matrix of forgeries
+#   (known-good PASSES; every deliberate tamper FAILS). This is use case C.
+name: Provenance
+
+on:
+  push:
+    paths:
+      - "prompts/**"
+      - "lib/**"
+      - "harness/**"
+      - "tests/**"
+      - "provenance-hook.sh"
+      - ".github/workflows/provenance.yml"
+  pull_request:
+    paths:
+      - "prompts/**"
+      - "lib/**"
+      - "harness/**"
+      - "tests/**"
+      - "provenance-hook.sh"
+      - ".github/workflows/provenance.yml"
+  workflow_dispatch: {}
+
+jobs:
+  provenance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pyyaml
+          gpg --version | head -1
+
+      - name: A/B parity test
+        run: bash tests/provenance_fixture/run_parity_test.sh
+
+      - name: Tamper matrix (known-good vs forged)
+        run: bash tests/provenance_fixture/tamper_test.sh
+
+      - name: Harness capture (Claude Code hooks)
+        run: bash tests/provenance_fixture/harness_capture_test.sh

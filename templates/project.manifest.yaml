@@ -1,0 +1,173 @@
+# Project Manifest Template
+# Copy this file to your project root and fill in the values
+# This file is the source of truth for project state
+
+---
+identity:
+  uuid: "<generate-new-uuid>"
+  name: "<project-name>"
+  description: "<brief-project-description>"
+  project_type: "<iot | webapp | service>"  # Determines which agent flow to use
+  created_at: "<ISO 8601 timestamp>"
+  created_by: "initialization-agent-v1.0"
+
+lineage:
+  parent_project: null  # UUID of parent if forked
+  forked_at: null
+  fork_reason: null
+
+status:
+  current_phase: "initialization"
+  health: "healthy"  # healthy | degraded | failed
+  last_health_check: "<ISO 8601 timestamp>"
+
+phases:
+  initialization:
+    started_at: "<ISO 8601 timestamp>"
+    completed_at: null
+    completed_by: null
+  prd_development:
+    started_at: null
+    completed_at: null
+    completed_by: null
+  techstack_evaluation:
+    started_at: null
+    completed_at: null
+    completed_by: null
+  experimentation:
+    started_at: null
+    completed_at: null
+    completed_by: null
+  design_review:  # WebDev only — IoT skips directly to test_development
+    started_at: null
+    completed_at: null
+    completed_by: null
+  test_development:
+    started_at: null
+    completed_at: null
+    completed_by: null
+  build_automation:  # IoT: Ansible playbooks; WebDev: Docker + CI/CD
+    started_at: null
+    completed_at: null
+    completed_by: null
+  validation:
+    started_at: null
+    completed_at: null
+    completed_by: null
+  brownfield_adoption:  # Used by Agent 08 for existing project adoption
+    started_at: null
+    completed_at: null
+    completed_by: null
+  stable:
+    reached_at: null
+
+# Feature Evolution History (populated by Agent 10)
+# Records requirements-driven feature evolutions
+feature_evolution: []
+  # Example entry:
+  # - date: "2026-01-15T10:30:00Z"
+  #   feature: "audio_streaming"
+  #   requirements_source: "docs/requirements/audio-v2.md"
+  #   archive: ".FeatureEvolution/2026-01-15_audio-streaming/"
+  #   agent: "feature-evolution-agent-v1.0"
+  #   status: "complete"  # complete | in_progress | rolled_back
+
+# Version pinning — keys vary by project_type
+# IoT example:
+#   raspberry_pi_os: "bookworm"
+#   python: "3.11"
+#   ansible: "2.15"
+# WebApp example:
+#   node: "20"
+#   python: "3.11"
+#   vite: "6"
+#   react: "19"
+version_pinning: {}
+  # Add project-specific version pins here
+
+agents:
+  - id: "initialization-agent-v1.0"
+    role: initialization
+    first_contribution: "<ISO 8601 timestamp>"
+    last_contribution: "<ISO 8601 timestamp>"
+
+self_correction:
+  max_attempts: 3
+  cooldown_seconds: 60
+  escalation_after_failures: 3
+
+# Maps actual project paths — agents MUST use these instead of pipeline defaults.
+# For greenfield projects (Agent 00), these match the standard layout.
+# For brownfield projects (Agent 08), these map to the existing structure.
+#
+# IoT projects use:
+#   roles_dir: "ansible/roles/"
+#   playbook: "ansible/playbooks/site.yml"
+#   inventory_files: ["ansible/inventory/hosts.yml"]
+#
+# WebApp projects use:
+#   frontend_dir: "frontend/"
+#   backend_dir: "backend/"
+#   ci_config: ".github/workflows/"
+#   dockerfile: "Dockerfile"
+project_layout:
+  tests_dir: "tests/"
+  docs_dir: "docs/"
+  test_catalog: "docs/test_catalog/"  # Project-specific test specifications
+  knowledge_base: ".AgentLessonsLearned/"
+  context_acquisition: ".ContextAcquisition/"
+  feature_development: ".FeatureDevelopment/"
+  feature_evolution: ".FeatureEvolution/"  # Agent 10 evolution archives
+  # Add type-specific paths here (see examples above)
+
+# Environment — keys vary by project_type
+# IoT example:
+#   target_platform: "raspberry_pi"
+#   target_models: ["Raspberry Pi 4 Model B", "Raspberry Pi 5"]
+#   network_type: "ethernet"
+#   internet_required: true
+# WebApp example:
+#   target_platform: "browser"
+#   target_browsers: ["Safari (iPadOS 17+)", "Chrome 120+"]
+#   pwa_required: true
+#   internet_required: true
+environment: {}
+  # Add project-specific environment config here
+
+metadata:
+  tags: []
+  documentation_url: null
+  repository_url: null
+
+# Prompt provenance — tamper-evident record of which prompts produced this build.
+# Module: provenance-kit (portable, drop-in). See that directory's README.md
+# for wiring instructions and prompts/Provenance_Manifest_Block.md for
+# the authoritative field reference.
+#
+# Init (Provenance_Init.md) populates the runtime fields (library_commit_at_init,
+# current_session) at session start; the rest are static configuration. Set
+# `enabled: false` to make the module inert (no sessions opened).
+prompt_provenance:
+  enabled: true
+  module_path: "./provenance-kit"     # Where the vendored provenance-kit tool lives in THIS project
+  library_repository: "<your prompt library remote, if any>"
+  library_path: "<from PROMPT_LIBRARY_PATH in .env>"   # The prompt library being hashed
+  library_commit_at_init: null        # Set by Provenance_Init at session start
+
+  storage_root: ".build-provenance"   # Per-session dirs live under here: session_<uuid>/
+  current_session: null               # e.g. ".build-provenance/session_<uuid>/" — set by Init
+
+  hash_algorithm: "sha256"            # Used for prompt hashes, audit chain, attestation
+  chain: "append-only"                # Audit log is a hash chain; never edited in place
+
+  attestation:
+    required: true                    # Build fails at attest time if signing can't complete
+    signer_key_id: "<from GPG_SIGNING_KEY_ID in .env>"
+    formula: "SHA256(library_commit || project_final_commit || session_id || audit_chain_head)"
+
+  verify_on_build: true               # Run Provenance_Verify (standard level) before declaring success
+  counter_capture: "hybrid"           # hybrid = harness wrapper + agent self-report, both recorded
+  harness_autodetect: true            # Detect claude-code | opencode | unknown at Init
+
+  archive_after_days: 30              # Sessions older than this move to .build-provenance/archive/
+  keep_minimum_sessions: 1            # ...but always keep at least the most recent

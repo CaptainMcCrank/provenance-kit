@@ -1,0 +1,27 @@
+{
+  "_comment": "Provenance capture hooks for Claude Code. Merge the `hooks` block into your project .claude/settings.json. Assumes provenance-kit is vendored at ./provenance-kit (its module_path); adjust the paths if you vendored it elsewhere. post_tool_use records each tool call; stop aggregates them into one hash-chained audit entry. Both no-op unless PROVENANCE_SESSION_DIR is set (i.e. the build was launched via a provenance-enabled launcher).",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/provenance-kit/harness/claude-code/post_tool_use.sh\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/provenance-kit/harness/claude-code/stop.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}
