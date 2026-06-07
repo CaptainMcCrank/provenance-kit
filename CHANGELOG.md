@@ -7,7 +7,9 @@ and pin the tool, so versions are cut deliberately.
 
 ## [Unreleased]
 
-First public release is being prepared. Everything below ships in `v0.1.0`.
+## [0.1.0] - 2026-06-06
+
+Initial public release.
 
 ### Added
 - **Provenance prompts** (`prompts/`) for the three build moments —
@@ -31,4 +33,5 @@ First public release is being prepared. Everything below ships in `v0.1.0`.
   capture test. Run in CI on every push/PR.
 - Apache-2.0 license.
 
-[Unreleased]: https://github.com/CaptainMcCrank/provenance-kit/commits/main
+[Unreleased]: https://github.com/CaptainMcCrank/provenance-kit/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/CaptainMcCrank/provenance-kit/releases/tag/v0.1.0
